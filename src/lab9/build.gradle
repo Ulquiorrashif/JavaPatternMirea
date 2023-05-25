@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+jar {
+    archiveBaseName = 'lab9'
+    destinationDirectory = file("jars")
+    manifest {
+        attributes 'Main-Class': 'App'
+    }
+}
+javadoc {
+    options.encoding = 'UTF-8'
+}
+
+task copyJar(type: Copy) {
+    dependsOn 'jar'
+    from file("$buildDir/lab9-1.0-SNAPSHOT.jar")
+    into file("$rootDir/src/main/resources/")
+}
+
+task removeJar(type: Delete) {
+    delete file("$rootDir/src/main/resources/lab9-1.0-SNAPSHOT.jar")
+}
+
+task buildImage(type: Exec) {
+    dependsOn 'copyJar'
+    finalizedBy 'removeJar'
+    commandLine 'docker', 'build', '-t', 'lab9-1.0', './jars/'
+}
+
+task runDocker(type: Exec) {
+    dependsOn 'buildImage'
+//    finalizedBy 'removeContainer'
+    commandLine 'docker', 'run', '--name', 'lab9-1.0', 'lab9-1.0'
+}
+
+//task removeContainer(type:Exec) {
+//    finalizedBy 'removeImage'
+//    commandLine 'docker', 'container', 'rm', 'lab9-1.0'
+//}
+//
+//task removeImage(type: Exec) {
+//    commandLine 'docker', 'image', 'rm', 'lab9-1.0'
+//}

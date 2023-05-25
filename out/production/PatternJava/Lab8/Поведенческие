@@ -1,0 +1,108 @@
+Пример использования паттерна Стратегия:
+
+Допустим, у нас есть приложение для обработки изображений. В этом приложении есть несколько способов обработки изображений, таких как изменение размера, обрезка, наложение фильтров и т.д. Для каждого способа обработки нужно реализовать свой алгоритм.
+
+С использованием паттерна Стратегия можно создать интерфейс ImageProcessingStrategy, который будет иметь метод processImage() для обработки изображения. Затем для каждого способа обработки можно создать отдельный класс, реализующий интерфейс ImageProcessingStrategy и содержащий свой алгоритм обработки.
+
+Например, класс ResizeImageStrategy будет содержать алгоритм изменения размера изображения, а класс CropImageStrategy - алгоритм обрезки изображения.
+
+Таким образом, приложение будет гибким и легко расширяемым. Если в будущем появится новый способ обработки изображений, достаточно будет создать новый класс, реализующий интерфейс ImageProcessingStrategy, и добавить его в приложение без изменения существующего кода.
+
+Пример кода:
+
+public interface ImageProcessingStrategy {
+    void processImage(Image image);
+}
+
+public class ResizeImageStrategy implements ImageProcessingStrategy {
+    private int width;
+    private int height;
+
+    public ResizeImageStrategy(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public void processImage(Image image) {
+        // алгоритм изменения размера изображения
+    }
+}
+
+public class CropImageStrategy implements ImageProcessingStrategy {
+    private int x;
+    private int y;
+    private int width;
+    private int height;
+
+    public CropImageStrategy(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    public void processImage(Image image) {
+        // алгоритм обрезки изображения
+    }
+}
+
+public class ImageProcessor {
+    private Image image;
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public void processImage(ImageProcessingStrategy processingStrategy) {
+        processingStrategy.processImage(image);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ImageProcessor processor = new ImageProcessor();
+        processor.setImage(new Image("image.png"));
+
+        ImageProcessingStrategy processingStrategy = new ResizeImageStrategy(800, 600);
+        processor.processImage(processingStrategy);
+
+        processingStrategy = new CropImageStrategy(100, 100, 400, 400);
+        processor.processImage(processingStrategy);
+    }
+}
+
+Пример без использования паттерна Стратегия:
+
+Допустим, у нас есть тот же приложение для обработки изображений. В этом приложении мы можем создать отдельный метод для каждого способа обработки изображения.
+
+Например, метод resizeImage() будет содержать алгоритм изменения размера изображения, а метод cropImage() - алгоритм обрезки изображения.
+
+Однако, если в будущем появится новый способ обработки изображений, нам придется изменять существующий код и добавлять новые методы.
+
+Пример кода:
+
+public class ImageProcessor {
+    private Image image;
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public void resizeImage(int width, int height) {
+        // алгоритм изменения размера изображения
+    }
+
+    public void cropImage(int x, int y, int width, int height) {
+        // алгоритм обрезки изображения
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ImageProcessor processor = new ImageProcessor();
+        processor.setImage(new Image("image.png"));
+
+        processor.resizeImage(800, 600);
+        processor.cropImage(100, 100, 400, 400);
+    }
+}
